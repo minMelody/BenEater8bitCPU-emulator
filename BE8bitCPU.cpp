@@ -5,6 +5,21 @@
 
 typedef unsigned char Byte;
 
+struct RAM
+{
+	static constexpr Byte MAX_SIZE = 16;
+	Byte data[MAX_SIZE];
+
+	// read byte
+	Byte operator[] (Byte address) const {
+		return data[address];
+	}
+	// write byte
+	Byte& operator[] (Byte address) {
+		return data[address];
+	}
+};
+
 struct CPU {
 	// registers
 	Byte A, B;
@@ -13,6 +28,7 @@ struct CPU {
 
 int main()
 {
+	RAM ram;
 	CPU cpu;
 
 	return 0;
