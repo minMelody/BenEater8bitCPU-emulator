@@ -21,8 +21,8 @@ struct RAM
 };
 
 struct CPU {
-	// registers
-	Byte A, B;
+	Byte PC;	// Program Counter
+	Byte A, B;	// Registers
 	Byte Ins;	// instruction register: bits 0xF0 -> instruction, bits 0x0F -> data
 };
 
