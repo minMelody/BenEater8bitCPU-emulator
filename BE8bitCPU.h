@@ -6,6 +6,7 @@ namespace BE8bitCPU {
 	struct RAM
 	{
 		static constexpr Byte MAX_SIZE { 16 };
+		Byte FetchByte(Byte address, int& cycles);
 
 		// Read and write byte
 		Byte& operator[] (Byte address) {
@@ -17,9 +18,8 @@ namespace BE8bitCPU {
 	};
 
 	struct CPU {
-
 		Byte PC;		// Program Counter
-		Byte A, B, OUT;	// Registers
+		Byte A, B, O;	// Registers
 		void Execute(int& cycles, RAM& ram);
 	};
 

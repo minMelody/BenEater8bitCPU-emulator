@@ -18,7 +18,7 @@ int main()
 	{
 		cpu.Execute(cycles, ram);
 	}
-	std::cout << (unsigned int)cpu.OUT;
+	std::cout << (unsigned int)cpu.O;
 
 	return 0;
 }

@@ -3,32 +3,38 @@
 
 #include "BE8bitCPU.h"
 
+BE8bitCPU::Byte BE8bitCPU::RAM::FetchByte(Byte address, int& cycles)
+{
+	cycles--;
+	return data[address];
+}
+
 void BE8bitCPU::CPU::Execute(int& cycles, RAM& ram)
 {
-	PC %= ram.MAX_SIZE;
-
-	Byte ins = ram[PC];	// Instructions: bits 7-4 -> instruction, bits 3-0 -> data
-	cycles -= 2;
+	Byte ins = ram.FetchByte(PC, cycles);	// Instructions: bits 7-4 -> instruction, bits 3-0 -> data
+	PC = (PC + 1) % ram.MAX_SIZE;
+	cycles--;
 
 	switch (ins & 0xf0)
 	{
 		case opcodes::LDA:
-			A = ram[ins & 0x0f];
-			PC++;
-			cycles -= 3;
+			A = ram.FetchByte(ins & 0x0f, cycles);
+			cycles--;
+			cycles--;	// Extra cycle
 			break;
 		case opcodes::ADD:
-			A += ram[ins & 0x0f];
-			PC++;
-			cycles -= 3;
+			B = ram.FetchByte(ins & 0x0f, cycles);
+			cycles--;
+			A += B;
+			cycles--;
 			break;
 		case opcodes::OUT:
-			OUT = A;
-			PC++;
-			cycles -= 3;
+			O = A;
+			cycles--;
+			cycles -= 2;// Extra cycles
 			break;
 		case opcodes::HLT:
-			cycles = 0;
+			cycles = 0;	// Stops clock
 			break;
 		default:
 			break;
