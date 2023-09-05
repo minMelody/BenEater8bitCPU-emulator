@@ -1,12 +1,19 @@
 #pragma once
+#include <cstdint>
 
 namespace BE8bitCPU {
-	typedef unsigned char Byte;
+	typedef uint8_t Byte;
 
 	struct RAM
 	{
 		static constexpr Byte MAX_SIZE { 16 };
 		Byte FetchByte(Byte address, int& cycles);
+
+		RAM(Byte prog[MAX_SIZE]) {
+			for (int i = 0; i < MAX_SIZE; i++) {
+				data[i] = prog[i];
+			}
+		}
 
 		// Read and write byte
 		Byte& operator[] (Byte address) {
@@ -20,6 +27,7 @@ namespace BE8bitCPU {
 	struct CPU {
 		Byte PC;		// Program Counter
 		Byte A, B, O;	// Registers
+		void Reset();
 		void Execute(int& cycles, RAM& ram);
 	};
 
