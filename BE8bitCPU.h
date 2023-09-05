@@ -45,6 +45,7 @@ namespace BE8bitCPU {
 			NOP = 0x00,
 			LDA = 0x10,
 			ADD = 0x20,
+			SUB = 0x30,
 			OUT = 0xe0,
 			HLT = 0xf0;
 	};

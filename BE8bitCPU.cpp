@@ -36,6 +36,12 @@ void BE8bitCPU::CPU::Execute(int& cycles, RAM& ram)
 			A += B;
 			cycles--;
 			break;
+		case opcodes::SUB:
+			B = ram.FetchByte(ins & 0x0f, cycles);
+			cycles--;
+			A -= B;
+			cycles--;
+			break;
 		case opcodes::OUT:
 			O = A;
 			cycles--;

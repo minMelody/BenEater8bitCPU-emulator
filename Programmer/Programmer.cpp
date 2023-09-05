@@ -60,8 +60,16 @@ int main()
             prog[counter] = opcodes::ADD + stoi(vals[0], NULL, 0);
             counter++;
         }
+        else if (ins == "SUB") {
+            prog[counter] = opcodes::SUB + stoi(vals[0], NULL, 0);
+            counter++;
+        }
         else if (ins == "OUT") {
             prog[counter] = opcodes::OUT;
+            counter++;
+        }
+        else if (ins == "HLT") {
+            prog[counter] = opcodes::HLT;
             counter++;
         }
 
