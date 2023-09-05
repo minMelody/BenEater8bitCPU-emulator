@@ -11,45 +11,58 @@ vector<string> split(string str, char delimiter) {
     size_t pos = 0;
     while ((pos = str.find(delimiter)) != string::npos) {
         string subst = str.substr(0, pos);
-        if (subst.length() > 1) vec.push_back(subst);
+        if (subst.length() > 0) vec.push_back(subst);
         str.erase(0, pos + 1);
     }
-    vec.push_back(str);
+    if (str.length() > 0) vec.push_back(str);
     return vec;
+}
+
+void WriteVariables(Byte start_adr, vector<string> values, Byte& counter, Byte prog[]) {
+    for (int i = 0; i < values.size(); i++) {
+        if (start_adr + i >= RAM::MAX_SIZE) break;
+        Byte value = stoi(values[i], NULL, 0);
+        prog[start_adr + i] = value;
+        counter += (start_adr + i == counter);
+    }
 }
 
 int main()
 {
-    cout << '\\' << '\n';
+    cout << '>' << '\n';
     Byte prog[RAM::MAX_SIZE]{ 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
     Byte counter = 0;
 
     string input;
     while (getline(cin, input)) {
-        if (input == string("\\")) break;
+        if (input == string("")) continue;
 
-        vector<string> line = split(input, ' ');
+        vector<string> line = split(split(input, ';')[0], ' ');
+
+        if (line[0] == string("\\")) break;
+
+        string ins = line[0];
+        vector<string> vals = vector<string>(line.begin() + 1, line.end());
         
-        if (line[0][0] == '@') {
-            Byte address = stoi(line[0].substr(1));
-            prog[address] = stoi(line[1]);
-            counter += (address == counter);
+        if (ins[0] == '@') {
+            Byte address = stoi(ins.substr(1), NULL, 0);
+            WriteVariables(address, vals, counter, prog);
         }
-        else if (string(line[0]) == "LDA") {
-            prog[counter] = opcodes::LDA + stoi(line[1]);
+        else if (ins == "LDA") {
+            prog[counter] = opcodes::LDA + stoi(vals[0], NULL, 0);
             counter++;
         }
-        else if (string(line[0]) == "ADD") {
-            prog[counter] = opcodes::ADD + stoi(line[1]);
+        else if (ins == "ADD") {
+            prog[counter] = opcodes::ADD + stoi(vals[0], NULL, 0);
             counter++;
         }
-        else if (string(line[0]) == "OUT") {
+        else if (ins == "OUT") {
             prog[counter] = opcodes::OUT;
             counter++;
         }
 
-        if (counter >= RAM::MAX_SIZE - 1) {
-            cout << '\\' << '\n';
+        if (counter >= RAM::MAX_SIZE) {
+            cout << "\\ Reached end of file. \n";
             break;
         }
     }
