@@ -22,6 +22,9 @@ void BE8bitCPU::CPU::Execute(int& cycles, RAM& ram)
 
 	switch (ins & 0xf0)
 	{
+		case opcodes::NOP:
+			cycles -= 3;	// Do nothing for 3 cycles
+			break;
 		case opcodes::LDA:
 			A = ram.FetchByte(ins & 0x0f, cycles);
 			cycles--;

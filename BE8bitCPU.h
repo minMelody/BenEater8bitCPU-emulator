@@ -14,6 +14,14 @@ namespace BE8bitCPU {
 				data[i] = prog[i];
 			}
 		}
+		template<typename... Byte>
+		RAM(Byte... prog) {
+			int i = 0;
+			for (const auto b : {prog...}) {
+				data[i] = b;
+				i++;
+			}
+		}
 
 		// Read and write byte
 		Byte& operator[] (Byte address) {
@@ -34,9 +42,10 @@ namespace BE8bitCPU {
 	struct opcodes
 	{
 		static constexpr Byte
-			LDA = 0x00,
-			ADD = 0x10,
-			OUT = 0x20,
+			NOP = 0x00,
+			LDA = 0x10,
+			ADD = 0x20,
+			OUT = 0xe0,
 			HLT = 0xf0;
 	};
 }

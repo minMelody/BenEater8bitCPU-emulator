@@ -48,6 +48,10 @@ int main()
             Byte address = stoi(ins.substr(1), NULL, 0);
             WriteVariables(address, vals, counter, prog);
         }
+        else if (ins == "NOP") {
+            prog[counter] = opcodes::NOP;
+            counter++;
+        }
         else if (ins == "LDA") {
             prog[counter] = opcodes::LDA + stoi(vals[0], NULL, 0);
             counter++;
