@@ -33,10 +33,13 @@ namespace BE8bitCPU {
 	};
 
 	struct CPU {
-		Byte PC;		// Program Counter
-		Byte A, B, O;	// Registers
+		Byte PC;	// Program Counter
+		Byte A, B;	// Registers
 		void Reset();
-		void Execute(int& cycles, RAM& ram);
+		// Each instruction takes 3 cycles
+		// * Normal exit returns 256
+		// * A return value lower than 256 is cpu output
+		unsigned int Execute(int& cycles, RAM& ram);
 	};
 
 	struct opcodes
@@ -46,6 +49,16 @@ namespace BE8bitCPU {
 			LDA = 0x10,
 			ADD = 0x20,
 			SUB = 0x30,
+			STA = 0x40,
+			LDI = 0x50,
+			JMP = 0x60,
+			//  = 0x70,
+			//  = 0x80,
+			//  = 0x90,
+			//  = 0xa0,
+			//  = 0xb0,
+			//  = 0xc0,
+			//  = 0xd0,
 			OUT = 0xe0,
 			HLT = 0xf0;
 	};
