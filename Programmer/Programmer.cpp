@@ -52,15 +52,17 @@ int main()
             Byte address = stoi(ins.substr(1), NULL, 0);
             writeValues(address, vals, counter, prog);
         }
-        else if (ins == "NOP") writeInstruction(opcodes::NOP, 0           , counter, prog);
+        else if (ins == "NOP") writeInstruction(opcodes::NOP, 0                     , counter, prog);
         else if (ins == "LDA") writeInstruction(opcodes::LDA, stoi(vals[0], NULL, 0), counter, prog);
         else if (ins == "ADD") writeInstruction(opcodes::ADD, stoi(vals[0], NULL, 0), counter, prog);
         else if (ins == "SUB") writeInstruction(opcodes::SUB, stoi(vals[0], NULL, 0), counter, prog);
         else if (ins == "STA") writeInstruction(opcodes::STA, stoi(vals[0], NULL, 0), counter, prog);
         else if (ins == "LDI") writeInstruction(opcodes::LDI, stoi(vals[0], NULL, 0), counter, prog);
         else if (ins == "JMP") writeInstruction(opcodes::JMP, stoi(vals[0], NULL, 0), counter, prog);
-        else if (ins == "OUT") writeInstruction(opcodes::OUT, 0           , counter, prog);
-        else if (ins == "HLT") writeInstruction(opcodes::HLT, 0           , counter, prog);
+        else if (ins == "JC" ) writeInstruction(opcodes::JC , stoi(vals[0], NULL, 0), counter, prog);
+        else if (ins == "JZ" ) writeInstruction(opcodes::JZ , stoi(vals[0], NULL, 0), counter, prog);
+        else if (ins == "OUT") writeInstruction(opcodes::OUT, 0                     , counter, prog);
+        else if (ins == "HLT") writeInstruction(opcodes::HLT, 0                     , counter, prog);
 
         if (counter >= RAM::MAX_SIZE) {
             cout << "\\ Reached end of file. \n";

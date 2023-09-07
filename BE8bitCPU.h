@@ -35,6 +35,7 @@ namespace BE8bitCPU {
 	struct CPU {
 		Byte PC;	// Program Counter
 		Byte A, B;	// Registers
+		bool Z, C;	// Flags
 		void Reset();
 		// Each instruction takes 3 cycles
 		// * Normal exit returns 256
@@ -52,8 +53,8 @@ namespace BE8bitCPU {
 			STA = 0x40,
 			LDI = 0x50,
 			JMP = 0x60,
-			//  = 0x70,
-			//  = 0x80,
+			JC  = 0x70,
+			JZ  = 0x80,
 			//  = 0x90,
 			//  = 0xa0,
 			//  = 0xb0,

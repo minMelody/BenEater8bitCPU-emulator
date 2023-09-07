@@ -11,7 +11,14 @@ BE8bitCPU::Byte BE8bitCPU::RAM::FetchByte(Byte address, int& cycles)
 
 void BE8bitCPU::CPU::Reset()
 {
-	PC = A = B = 0;
+	PC = A = B = Z = C = 0;
+}
+
+unsigned int Sum(BE8bitCPU::Byte A, BE8bitCPU::Byte B, bool& C, bool& Z) {
+	unsigned int sum = A + B;
+	C = (sum > 0xFF);
+	Z = (sum & 0xFF) == 0;
+	return sum;
 }
 
 unsigned int BE8bitCPU::CPU::Execute(int& cycles, RAM& ram)
@@ -33,13 +40,13 @@ unsigned int BE8bitCPU::CPU::Execute(int& cycles, RAM& ram)
 		case opcodes::ADD:
 			B = ram.FetchByte(ins & 0x0f, cycles);
 			cycles--;
-			A += B;
+			A = Sum(A, B, C, Z);
 			cycles--;
 			break;
 		case opcodes::SUB:
 			B = ram.FetchByte(ins & 0x0f, cycles);
 			cycles--;
-			A -= B;
+			A = Sum(A, -B, C, Z);
 			cycles--;
 			break;
 		case opcodes::STA:
@@ -54,6 +61,16 @@ unsigned int BE8bitCPU::CPU::Execute(int& cycles, RAM& ram)
 			break;
 		case opcodes::JMP:
 			PC = ins & 0x0f;
+			cycles--;
+			cycles -= 2;	// Extra cycles
+			break;
+		case opcodes::JC:
+			PC = C ? ins & 0x0f : PC;
+			cycles--;
+			cycles -= 2;	// Extra cycles
+			break;
+		case opcodes::JZ:
+			PC = Z ? ins & 0x0f : PC;
 			cycles--;
 			cycles -= 2;	// Extra cycles
 			break;
