@@ -34,14 +34,18 @@ namespace BE8bitCPU {
 
 	struct CPU {
 		public:
-			uint8_t PC;		// Program Counter
-			uint8_t IR;		// Instruction register
-			uint8_t A, B;	// ALU Registers
-			// Output Register.
-			// Check for value less than 256 for an out instruction.
-			uint16_t OUT;
-			bool Z, C, HALT;// Flags
+			uint8_t PC;			// Program Counter
+			uint8_t IR;			// Instruction Register
+			uint8_t A, B, OUT;	// Registers
+
+			bool Z, C;	// CPU Flags
+			bool HALT;
+			bool OE;	// Output Enable
+			bool IIE;	// Invalid Instruction Exception
+
 			void Reset();
+			// A return value of zero (0) is normal return.
+			// See EmulationFlags for other return value.
 			void Execute(RAM& ram);
 	};
 

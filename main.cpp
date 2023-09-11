@@ -6,9 +6,9 @@ using namespace BE8bitCPU;
 
 
 #if defined _DEBUG
-#define PROG "debug.bin"
+#define PROGRAM "debug.bin"
 #else
-#define PROG argv[1]
+#define PROGRAM argv[1]
 #endif
 
 uint8_t* loadProgram(const char* filePath) {
@@ -29,7 +29,7 @@ uint8_t* loadProgram(const char* filePath) {
 
 int main()
 {
-	RAM ram { loadProgram(PROG) };
+	RAM ram { loadProgram(PROGRAM) };
 
 	CPU cpu;
 	cpu.Reset();
@@ -38,9 +38,10 @@ int main()
 	while (!cpu.HALT)
 	{
 		cpu.Execute(ram);
-		if (cpu.OUT < 256) std::cout << cpu.OUT << '\n';
-		else if (cpu.OUT == UINT16_MAX) printf("Invalid instruction: %02x \n", cpu.IR);
+		if (cpu.OE) printf("%d \n", cpu.OUT);
+		if (cpu.IIE) printf("Invalid instruction: %02x at address 0x%02x \n", cpu.IR, cpu.PC - 1);
 	}
+	//std::cout << (cpu.OUT & 0xFF) << std::endl;
 
 	return 0;
 }
