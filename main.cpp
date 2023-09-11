@@ -1,21 +1,45 @@
 #include <iostream>
+#include <fstream>
 #include "BE8bitCPU.h"
 
 using namespace BE8bitCPU;
 
+
+#if defined _DEBUG
+#define PROG "debug.bin"
+#else
+#define PROG argv[1]
+#endif
+
+uint8_t* loadProgram(const char* filePath) {
+	std::ifstream f(filePath);
+	f.seekg(0, std::ios_base::end);
+	unsigned long size = f.tellg();
+	f.seekg(0, std::ios_base::beg);
+	if (f.is_open()) {
+		uint8_t* buffer = (uint8_t*)malloc((size+1) * sizeof(uint8_t));
+		f.read((char*)buffer, size);
+		f.close();
+		return (uint8_t*)buffer;
+	}
+	else std::cout << "Unable to open file path \n" << filePath;
+
+	return (uint8_t*)"";
+}
+
 int main()
 {
-	RAM ram { 0x1e, 0x3c, 0x76, 0x1d, 0xe0, 0xf0, 0x4e, 0x1d, 0x2f, 0x4d, 0x60, 0xff, 0x01, 0x00, 0x07, 0x08 };
+	RAM ram { loadProgram(PROG) };
 
-	CPU cpu{};
+	CPU cpu;
 	cpu.Reset();
 
-	int cycles = INT_MAX;
-	unsigned int out = 0x100;
-	while (cycles > 0)
+	// Execute until the HALT flag is set
+	while (!cpu.HALT)
 	{
-		out = cpu.Execute(cycles, ram);
-		if (out < 0x100) std::cout << out << '\n';
+		cpu.Execute(ram);
+		if (cpu.OUT < 256) std::cout << cpu.OUT << '\n';
+		else if (cpu.OUT == UINT16_MAX) printf("Invalid instruction: %02x \n", cpu.IR);
 	}
 
 	return 0;

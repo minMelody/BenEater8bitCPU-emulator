@@ -1,6 +1,6 @@
 # PROGRAM WRITING
 
-A simple way to program the 8bit cpu, supports hexadecimal numbers, comments and writing a value to a specific address.
+A simple way to program the 8bit cpu from a command prompt, supports hexadecimal numbers, comments and writing a value to a specific address.
 
 See [Ben Eater's videos](https://youtube.com/playlist?list=PLowKtXNTBypGqImE405J2565dvjafglHU&feature=shared) for a list of instructions and their meaning.
 
@@ -18,7 +18,8 @@ OUT
 
 ### SPECIAL COMMANDS
 #### @adr
-* The `@adr` command treats the following values as numbers to write at a specific address. <b>Note that it is <i>NOT</i> the same as a STR instruction. It is a compile-time command only.</b>
+* <b>Note that it is <i>NOT</i> the same as a STA instruction. It is a compile-time command only.</b>
+* The `@adr` command treats the following values as numbers to write at a specific address. 
 ```
 @1 LDA 14 ; Is not a valid command
 

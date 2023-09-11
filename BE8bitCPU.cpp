@@ -3,87 +3,70 @@
 
 #include "BE8bitCPU.h"
 
-BE8bitCPU::Byte BE8bitCPU::RAM::FetchByte(Byte address, int& cycles)
-{
-	cycles--;
-	return data[address];
-}
-
 void BE8bitCPU::CPU::Reset()
 {
-	PC = A = B = Z = C = 0;
+	PC = A = B = 0;
+	Z = C = HALT = false;
 }
 
-unsigned int Sum(BE8bitCPU::Byte A, BE8bitCPU::Byte B, bool& C, bool& Z) {
+unsigned int Sum(uint8_t A, uint8_t B, bool& C, bool& Z) {
 	unsigned int sum = A + B;
 	C = (sum > 0xFF);
 	Z = (sum & 0xFF) == 0;
 	return sum;
 }
 
-unsigned int BE8bitCPU::CPU::Execute(int& cycles, RAM& ram)
+void BE8bitCPU::CPU::Execute(RAM& ram)
 {
-	Byte ins = ram.FetchByte(PC, cycles);	// Instructions: bits 7-4 -> instruction, bits 3-0 -> data
-	PC = (PC + 1) % ram.MAX_SIZE;
-	cycles--;
+	// The 4 higher bits represent the opcode
+	// While the 4 lowest bits represent the data (memory address, load immediate value, etc.)
+	IR = ram[PC];
 
-	switch (ins & 0xf0)
+	// Increment the program counter
+	// The way Ben Eater built his program counter it wraps around on overflow
+	PC = (PC + 1) % ram.MAX_SIZE;
+
+	switch (IR & 0xf0)
 	{
 		case opcodes::NOP:
-			cycles -= 3;	// Do nothing for 3 cycles
 			break;
 		case opcodes::LDA:
-			A = ram.FetchByte(ins & 0x0f, cycles);
-			cycles--;
-			cycles--;		// Extra cycle
+			A = ram[IR & 0x0f];
 			break;
 		case opcodes::ADD:
-			B = ram.FetchByte(ins & 0x0f, cycles);
-			cycles--;
+			B = ram[IR & 0x0f];
 			A = Sum(A, B, C, Z);
-			cycles--;
 			break;
 		case opcodes::SUB:
-			B = ram.FetchByte(ins & 0x0f, cycles);
-			cycles--;
+			B = ram[IR & 0x0f];
 			A = Sum(A, -B, C, Z);
-			cycles--;
 			break;
 		case opcodes::STA:
-			ram[ins & 0x0f] = A;
-			cycles -= 2;
-			cycles--;		// Extra cycle
+			ram[IR & 0x0f] = A;
 			break;
 		case opcodes::LDI:
-			A = ins & 0x0f;
-			cycles--;
-			cycles -= 2;	// Extra cycles
+			A = IR & 0x0f;
 			break;
 		case opcodes::JMP:
-			PC = ins & 0x0f;
-			cycles--;
-			cycles -= 2;	// Extra cycles
+			PC = IR & 0x0f;
 			break;
 		case opcodes::JC:
-			PC = C ? ins & 0x0f : PC;
-			cycles--;
-			cycles -= 2;	// Extra cycles
+			PC = C ? (IR & 0x0f) : PC;
 			break;
 		case opcodes::JZ:
-			PC = Z ? ins & 0x0f : PC;
-			cycles--;
-			cycles -= 2;	// Extra cycles
+			PC = Z ? (IR & 0x0f) : PC;
 			break;
 		case opcodes::OUT:
-			cycles -= 3;
-			return A;
-			break;
+			OUT = A;
+			return;
 		case opcodes::HLT:
-			cycles = 0;		// Stops clock
+			HALT = true;
 			break;
 		default:
-			break;
+			OUT = UINT16_MAX; // Invalid instruction code
+			HALT = true;
+			return;
 	}
 
-	return 0x100;
+	OUT = 256; // Normal exit code
 }
