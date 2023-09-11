@@ -6,14 +6,14 @@ namespace BE8bitCPU {
 		public:
 			static constexpr uint8_t MAX_SIZE { 16 };
 
-			// Constructor loads a program in memory
+			// Constructors loads a program in memory
+
 			RAM(uint8_t prog[MAX_SIZE]) {
 				for (int i = 0; i < MAX_SIZE; i++) {
 					data[i] = prog[i];
 				}
 			}
 			template<typename... uint8_t>
-			// Constructor loads a program in memory
 			RAM(uint8_t... prog) {
 				int i = 0;
 				for (const auto b : { prog... }) {
@@ -44,8 +44,6 @@ namespace BE8bitCPU {
 			bool IIE;	// Invalid Instruction Exception
 
 			void Reset();
-			// A return value of zero (0) is normal return.
-			// See EmulationFlags for other return value.
 			void Execute(RAM& ram);
 	};
 

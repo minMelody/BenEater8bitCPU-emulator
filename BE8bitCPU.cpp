@@ -22,7 +22,7 @@ void BE8bitCPU::CPU::Execute(RAM& ram)
 	OE = IIE = false;
 
 	// The 4 higher bits represent the opcode
-	// While the 4 lowest bits represent the data (memory address, load immediate value, etc.)
+	// While the 4 lowest bits represent the data (memory address, immediate value, etc.)
 	IR = ram[PC];
 
 	// Increment the program counter
