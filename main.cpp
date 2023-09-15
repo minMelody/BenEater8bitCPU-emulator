@@ -4,7 +4,6 @@
 
 using namespace BE8bitCPU;
 
-
 #if defined _DEBUG
 #define PROGRAM "debug.bin"
 #else
@@ -41,7 +40,6 @@ int main()
 		if (cpu.OE) printf("%d \n", cpu.OUT);
 		if (cpu.IIE) printf("Invalid instruction: %02x at address 0x%02x \n", cpu.IR, cpu.PC - 1);
 	}
-	//std::cout << (cpu.OUT & 0xFF) << std::endl;
 
 	return 0;
 }
