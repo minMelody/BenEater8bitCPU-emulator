@@ -1,35 +1,26 @@
 #include <iostream>
-#include <fstream>
+#include <string>
 #include "BE8bitCPU.h"
+#include "Assembler/Assembler.h"
 
 using namespace BE8bitCPU;
 
-#if defined _DEBUG
-#define PROGRAM "debug.bin"
-#else
-#define PROGRAM argv[1]
-#endif
-
-uint8_t* loadProgram(const char* filePath) {
-	std::ifstream f(filePath);
-	f.seekg(0, std::ios_base::end);
-	unsigned long size = f.tellg();
-	f.seekg(0, std::ios_base::beg);
-	if (f.is_open()) {
-		uint8_t* buffer = (uint8_t*)malloc((size+1) * sizeof(uint8_t));
-		f.read((char*)buffer, size);
-		f.close();
-		return (uint8_t*)buffer;
-	}
-	else std::cout << "Unable to open file path \n" << filePath;
-
-	return (uint8_t*)"";
-}
-
-int main()
+int main(int argc, const char* argv[])
 {
-	RAM ram { loadProgram(PROGRAM) };
+	std::string PROGRAM_PATH{};
+	if (argc < 2)
+	{
+		std::cout << "Program Path: ";
+		getline(std::cin, PROGRAM_PATH);
+	}
+	else
+	{
+		PROGRAM_PATH = argv[1];
+	}
 
+	// Load and assemble program
+	Assembler beasm;
+	RAM ram { beasm.assembleProgram(PROGRAM_PATH.c_str()) };
 	CPU cpu;
 	cpu.Reset();
 

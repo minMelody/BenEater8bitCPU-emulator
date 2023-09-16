@@ -1,20 +1,24 @@
 #pragma once
 #include <cstdint>
 
-namespace BE8bitCPU {
-	struct RAM {
+namespace BE8bitCPU
+{
+	struct RAM
+	{
 		public:
-			static constexpr uint8_t MAX_SIZE { 16 };
+			static constexpr unsigned int MAX_SIZE { 16 };
 
 			// Constructors loads a program in memory
 
-			RAM(uint8_t prog[MAX_SIZE]) {
+			RAM(uint8_t prog[MAX_SIZE])
+			{
 				for (int i = 0; i < MAX_SIZE; i++) {
 					data[i] = prog[i];
 				}
 			}
 			template<typename... uint8_t>
-			RAM(uint8_t... prog) {
+			RAM(uint8_t... prog)
+			{
 				int i = 0;
 				for (const auto b : { prog... }) {
 					data[i] = b;
@@ -32,7 +36,8 @@ namespace BE8bitCPU {
 			uint8_t data[MAX_SIZE];
 	};
 
-	struct CPU {
+	struct CPU
+	{
 		public:
 			uint8_t PC;			// Program Counter
 			uint8_t IR;			// Instruction Register
@@ -47,7 +52,8 @@ namespace BE8bitCPU {
 			void Execute(RAM& ram);
 	};
 
-	struct opcodes {
+	struct opcodes
+	{
 		public:
 			static constexpr uint8_t
 				NOP = 0x00,
