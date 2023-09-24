@@ -47,11 +47,8 @@ uint8_t* BE8bitCPU::Assembler::assembleProgram(const char* filePath)
     std::ifstream f(filePath);
     if (f.is_open()) {
         // Initialize program with a bunch of no-ops
-        // Prevents gaps in addresses to cause undefined behavior
-        uint8_t prog[RAM::MAX_SIZE]{};
-        for (int i = 0; i < RAM::MAX_SIZE; i++) {
-            prog[i] = opcodes::NOP;
-        }
+        uint8_t prog[RAM::MAX_SIZE];
+        std::fill(std::begin(prog), std::end(prog), opcodes::NOP);
 
         unsigned int counter = 0;
         for (std::string line; getline(f, line);) {
@@ -67,7 +64,7 @@ uint8_t* BE8bitCPU::Assembler::assembleProgram(const char* filePath)
     exit(1);
 }
 
-void BE8bitCPU::Assembler::interpretLine(std::string line, uint8_t prog[], unsigned int& counter)
+void BE8bitCPU::Assembler::interpretLine(std::string line, uint8_t prog[RAM::MAX_SIZE], unsigned int& counter)
 {
     if (line == std::string("")) return;
 

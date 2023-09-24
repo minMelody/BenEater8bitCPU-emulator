@@ -6,10 +6,10 @@
 void BE8bitCPU::CPU::Reset()
 {
 	PC = A = B = OUT = 0;
-	Z = C = HALT = false;
+	Z = C = HALT = OE = IIE = false;
 }
 
-uint8_t Sum(uint8_t A, uint8_t B, bool& C, bool& Z)
+uint8_t Adder(uint8_t A, uint8_t B, bool& C, bool& Z)
 {
 	unsigned int sum = A + B;
 	C = (sum > 0xFF);
@@ -38,11 +38,11 @@ void BE8bitCPU::CPU::Execute(RAM& ram)
 			break;
 		case opcodes::ADD:
 			B = ram[IR & 0x0F];
-			A = Sum(A, B, C, Z);
+			A = Adder(A, B, C, Z);
 			break;
 		case opcodes::SUB:
 			B = ram[IR & 0x0F];
-			A = Sum(A, -B, C, Z);
+			A = Adder(A, -B, C, Z);
 			break;
 		case opcodes::STA:
 			ram[IR & 0x0F] = A;
